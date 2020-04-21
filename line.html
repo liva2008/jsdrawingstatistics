@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="google" value="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>jsDrawing</title>
+    <link rel="stylesheet" href="vs/editor/editor.main.css">
+    <script src="./line.js"></script>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .headbar {
+            margin: 0px;
+            padding: 0px;
+            background-color: dimgray;
+            width: 100%;
+            height: 8%;
+            vertical-align: middle;
+        }
+
+        .menuitem {
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 15px;
+            float: left;
+        }
+
+        .main {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .editor {
+            margin: 0px;
+            padding: 0px;
+            background-color:white;
+            width: 50%;
+            height: 100%;
+            float: left;
+        }
+
+        .navmenuitem {
+            background-color: dimgray;
+            margin: 0px;
+            height: 95%;
+            width: 100%;
+        }
+
+        .drawing {
+            margin: 0px;
+            padding: 0px;
+            width: 50%;
+            height: 100%;
+            float: left;
+        }
+
+        .contentitem {
+            margin: 0px;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+        }
+
+        a {
+            text-decoration: none
+        }
+
+        a:link {
+            color: blue
+        }
+
+        a:visited {
+            color: blue
+        }
+
+        a:hover {
+            color: rgb(0, 255, 106)
+        }
+
+        a:active {
+            color: rgb(255, 0, 0)
+        }
+
+        .galleryItem {
+            background-color: dimgray;
+            color: white;
+            padding-top: 15px;
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body scroll="no">
+    <div style="width: 100%;height: 100%;">
+        
+        <div class="main">
+            <div class="editor">
+                <div>
+                    <input type="button" value="运行" onclick="run()">
+                </div>
+                <div id="editor" class="navmenuitem">
+                </div>
+                <script src="vs/loader.js"></script>
+                <script>
+                    var monacoEditor;
+                    //设置插件路径
+                    require.config({
+                        paths: {
+                            'vs': 'vs'
+                        }
+                    });
+                    //绑定对象并赋值
+                    require(['vs/editor/editor.main'], function () {
+                        //container为要绑定的对象
+                        monacoEditor = monaco.editor.create(document.getElementById('editor'), {
+                            value: code,
+                            language: 'javascript',
+                            theme: 'vs-light',
+                            automaticLayout: true,
+                            fontSize: 24,
+                            fontFamily: 'Cascadia Code'
+                        });
+                    });
+                </script>
+            </div>
+            <div class="drawing">
+                <div class="contentitem" id="drawing">
+                </div>
+                <script type="text/javascript">
+                    // create a network
+                    function draw(page) {
+                        var container = document.getElementById('drawing');
+                        container.innerHTML = '';
+                        let oIframe = document.createElement('iframe');
+                        oIframe.width = "99%";
+                        oIframe.height = "98%";
+                        oIframe.src = `./run.html`;
+                        container.appendChild(oIframe);
+
+                        oIframe.onload = function () {
+                            oIframe.contentWindow.postMessage(page, '*');
+                        }
+                    }
+                    draw(page1 + code + page2);
+
+                    function run() {
+                        code = monacoEditor.getValue();
+                        //console.log(page1 + code + page2);
+                        draw(page1 + code + page2);
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
